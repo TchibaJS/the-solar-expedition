@@ -1,0 +1,95 @@
+.uhd-enter{border:1px solid #d4a96f88;border-radius:5px;background:#322416;color:#f3d6a8;padding:11px 14px;font-size:10px;font-weight:700;letter-spacing:.13em;white-space:nowrap}.uhd-enter:hover,.uhd-enter:focus-visible{background:#4a321c;outline:2px solid #d4a96f}.uhd-dock,.uhd-panel-controls{display:none}
+#app.uhd-mode{height:100dvh;min-height:0;overflow:hidden}#app.uhd-mode .top{display:none}#app.uhd-mode main{height:100dvh}#app.uhd-mode.uhd-overview main{grid-template-columns:minmax(0,1fr)}#app.uhd-mode.uhd-overview .panel,#app.uhd-mode.uhd-overview .hero,#app.uhd-mode.uhd-overview .stage-bottom{display:none}#app.uhd-mode .uhd-dock{position:absolute;top:20px;right:22px;z-index:7;display:flex;gap:7px;padding:5px;border:1px solid #ffffff30;border-radius:28px;background:#07101dcc;box-shadow:0 8px 28px #0008;backdrop-filter:blur(12px)}.uhd-dock button{width:42px;height:42px;border:0;border-radius:50%;background:transparent;color:#e8edf5;font-size:21px;line-height:1}.uhd-dock button:hover,.uhd-dock button:focus-visible{background:#ffffff20;outline:1px solid #d4a96f}.uhd-dock button.muted{color:#8791a3;opacity:.7}#app.uhd-mode:not(.uhd-overview) .uhd-panel-controls{display:flex;align-items:center;gap:9px;margin-top:17px}#app.uhd-mode .uhd-panel-controls label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#8b98a9}#uhd-voice{min-width:0;flex:1;background:#101827;border:1px solid #ffffff2a;border-radius:5px;color:#eceff4;padding:9px 6px;font-size:11px}#uhd-read{width:35px;height:35px;flex:none;background:#30231a;border:1px solid #d4a96f88;border-radius:50%;color:#f2d6ac;font-size:13px}#uhd-voice:focus-visible,#uhd-read:focus-visible{outline:2px solid #d4a96f}
+@media(max-width:700px){#app.uhd-mode main{display:grid;grid-template-columns:1fr;grid-template-rows:50% 50%}#app.uhd-mode.uhd-overview main{grid-template-rows:1fr}#app.uhd-mode .stage{height:auto;min-height:0}#app.uhd-mode .panel{min-height:0}#app.uhd-mode .body-list{max-height:150px}#app.uhd-mode .uhd-dock{top:10px;right:10px}.uhd-dock button{width:36px;height:36px}}
+/* The capsule is a portrait display: reserve the height for the scene and use
+   a short, scrollable information tray at its foot. */
+@media (orientation:portrait){
+  #app,#app.uhd-mode{height:100dvh;min-height:0;overflow:hidden}
+  main,#app.uhd-mode main{height:calc(100dvh - 78px);display:grid;grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) minmax(220px,18vh)}
+  #app.has-focus main,#app.uhd-mode.has-focus main{grid-template-rows:minmax(0,1fr) minmax(260px,23vh)}
+  #app.uhd-mode main{height:100dvh}
+  #app.uhd-mode.uhd-overview main{grid-template-columns:1fr;grid-template-rows:1fr}
+  .stage,#app.uhd-mode .stage{height:auto;min-height:0}
+  .panel,#app.uhd-mode .panel{min-height:0;border-left:0;border-top:1px solid #ffffff29}
+  .panel-head{padding:15px 3vw 10px;flex:none}
+  .panel h2{font-size:clamp(22px,2.3vw,38px);margin:4px 0}
+  .panel p{font-size:clamp(13px,1.25vw,20px)}
+  .body-list,#app.uhd-mode .body-list{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px 10px;max-height:none;overflow:auto;padding:8px 2.5vw;flex:1}
+  .body-row{min-height:52px;padding:6px;gap:7px}
+  .body-row .num,.body-row .kind,.body-row .arrow{display:none}
+  .body-row .name{font-size:clamp(14px,1.4vw,22px)}
+  .body-row .dot{width:clamp(19px,2vw,32px);height:clamp(19px,2vw,32px)}
+  .panel footer{display:none}
+  #app.has-focus .body-list{display:none}
+  #app.has-focus .panel-head{display:flex;align-items:center;gap:14px;justify-content:space-between}
+  #app.has-focus .panel-head>.kicker,#app.has-focus .panel-head>p{display:none}
+  #app.has-focus .panel-head h2{margin:0;white-space:nowrap}
+  #app.uhd-mode.has-focus .uhd-panel-controls{margin:0;min-width:min(44vw,480px)}
+  .details{min-height:0;flex:1}
+  .tab{padding:12px 5px;font-size:clamp(12px,1.2vw,18px)}
+  .tab-content{padding:14px 3vw 18px}
+  .tab-content h3{font-size:clamp(22px,2vw,34px);margin-bottom:8px}
+  .tab-content p{font-size:clamp(14px,1.35vw,21px);line-height:1.4;margin:8px 0}
+  .moon-list{max-height:22vh;grid-template-columns:repeat(3,minmax(0,1fr))}
+  .moon-item{font-size:clamp(13px,1.2vw,19px)}
+  .hero{top:auto;bottom:5%;left:4%;max-width:58%;opacity:.85}
+  .hero h1{font-size:clamp(30px,4vw,62px);margin:8px 0}
+  .hero p{font-size:clamp(13px,1.25vw,19px);line-height:1.35}
+  .stage-bottom{display:none}
+  .focus-body{display:block;padding:0}
+  .globe-wrap{position:absolute;top:15%;left:50%;transform:translateX(-50%);width:70vw;max-width:70vw}
+  .focus-copy{position:absolute;left:4%;right:4%;bottom:3%;max-width:none;display:grid;grid-template-columns:1fr auto;align-items:end;gap:4px 2vw}
+  .focus-copy .kicker{grid-column:1/-1;font-size:clamp(12px,1.1vw,18px)}
+  .focus-copy h2{font-size:clamp(42px,5vw,82px);line-height:1;margin:0}
+  .focus-copy p{font-size:clamp(13px,1.2vw,19px);line-height:1.35;max-width:58vw;margin:0;align-self:center}
+  .facts{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:10px}
+  .fact{padding-top:8px}.fact small{font-size:clamp(10px,1vw,16px)}.fact strong{font-size:clamp(14px,1.5vw,24px);margin-top:3px}
+  .back{top:3%;left:4%}.back-planet{top:calc(3% + 60px)}
+  .visual-note{bottom:-4%}
+}
+.astronaut{display:none;position:absolute;z-index:2;width:clamp(90px,10vw,180px);top:13%;right:14%;filter:drop-shadow(0 0 16px #87c5dc44);pointer-events:none}
+#app.uhd-mode.uhd-overview .astronaut{display:block}
+#app.uhd-mode.uhd-overview .hero{display:block;z-index:3;top:auto;bottom:5%;left:5%;max-width:min(520px,44vw);text-shadow:0 2px 16px #020713}
+#app.uhd-mode.uhd-overview .hero h1{font-size:clamp(38px,3.7vw,72px)}
+#app.uhd-mode.uhd-overview .hero p{color:#c9d5e2}
+#app.uhd-mode.uhd-overview .stage-vignette{background:radial-gradient(ellipse at 16% 24%,#41618a27,transparent 42%),radial-gradient(ellipse at 86% 68%,#916a8b20,transparent 44%),radial-gradient(ellipse at 52% 55%,transparent 34%,#03071277 100%);opacity:1}
+@media(orientation:portrait){
+  #app.uhd-mode.uhd-overview .astronaut{top:14%;right:auto;left:11%;width:clamp(110px,13vw,220px)}
+  #app.uhd-mode.uhd-overview .hero{left:5%;bottom:6%;max-width:72vw}
+  #app.uhd-mode.uhd-overview .hero h1{font-size:clamp(38px,4.7vw,82px)}
+  #app.uhd-mode.uhd-overview .hero p{font-size:clamp(16px,1.5vw,26px);max-width:54vw}
+}
+/* Keep the overview balanced and the copy visible on the portrait capsule. */
+.stage-vignette{background:radial-gradient(ellipse at 50% 48%,transparent 34%,#03071255 100%),linear-gradient(0deg,#03071299,transparent 17%,transparent 82%,#03071255)}
+#app.uhd-mode.uhd-overview .hero{top:6%;bottom:auto}
+@media(orientation:portrait){
+  main,#app.uhd-mode main{grid-template-rows:minmax(0,1fr) minmax(260px,20vh)}
+  #app.has-focus main,#app.uhd-mode.has-focus main{grid-template-rows:minmax(0,1fr) minmax(350px,28vh)}
+  #app.uhd-mode.uhd-overview main{grid-template-rows:1fr}
+  .hero{top:4%;bottom:auto;left:5%;max-width:72%}
+  .hero h1{font-size:clamp(42px,4.8vw,84px)}
+  .hero p{font-size:clamp(18px,1.7vw,28px);max-width:55vw}
+  #app.uhd-mode.uhd-overview .hero{top:4%;bottom:auto;max-width:72vw}
+  #app.uhd-mode.uhd-overview .hero h1{font-size:clamp(42px,4.8vw,84px)}
+  #app.uhd-mode.uhd-overview .hero p{font-size:clamp(18px,1.7vw,28px);max-width:55vw}
+  .focus-copy{position:static;display:block;max-width:none}
+  .focus-title{position:absolute;z-index:3;top:2.5%;left:50%;width:65%;transform:translateX(-50%);text-align:center;pointer-events:none}
+  .focus-title h2{font-size:clamp(48px,5.8vw,100px);margin:6px 0;overflow-wrap:anywhere}
+  .focus-title .kicker{font-size:clamp(13px,1.3vw,22px)}
+  .focus-meta{position:absolute;z-index:3;bottom:3%;left:4%;right:4%;pointer-events:none}
+  .focus-meta p{font-size:clamp(17px,1.6vw,27px);line-height:1.35;max-width:70vw;margin:0 0 15px}
+  .focus-meta .facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;margin:0}
+  .focus-meta .fact small{font-size:clamp(13px,1.2vw,20px)}
+  .focus-meta .fact strong{font-size:clamp(19px,1.8vw,30px)}
+  .panel-head{padding:18px 3.2vw 14px}
+  .panel h2{font-size:clamp(30px,2.8vw,50px)}
+  .panel p{font-size:clamp(17px,1.6vw,27px)}
+  .body-row{min-height:62px}
+  .body-row .name{font-size:clamp(18px,1.8vw,30px)}
+  .tab{font-size:clamp(16px,1.5vw,25px);padding:18px 6px}
+  .tab-content{padding:22px 3.2vw 24px}
+  .tab-content h3{font-size:clamp(28px,2.5vw,44px)}
+  .tab-content p,.layer p{font-size:clamp(18px,1.7vw,29px);line-height:1.45}
+  .layer-head{font-size:clamp(17px,1.6vw,27px)}
+  .moon-item{font-size:clamp(17px,1.5vw,26px)}
+}

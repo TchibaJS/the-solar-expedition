@@ -1,0 +1,16 @@
+.moon-globe.moon-portrait{
+  width:72%;
+  border-radius:2%;
+  background-color:transparent;
+  background-size:contain;
+  background-position:center;
+  background-repeat:no-repeat;
+  box-shadow:0 0 65px #6989a51c;
+  animation:none;
+}
+.moon-globe.moon-unknown{
+  background-image:radial-gradient(circle at 34% 28%,#a4aab0 0,#727a83 32%,#303945 68%,#111723 100%);
+  box-shadow:inset -45px -24px 55px #0009,0 0 40px #72849a28;
+  animation:none;
+}
+.moon-note a{color:#d9bc91;text-decoration:underline;text-underline-offset:3px}

@@ -1,0 +1,19 @@
+Mapped moon textures: NASA/JPL Solar System Simulator, Caltech/JPL/USGS; Voyager, Galileo, and Viking mosaics. Many maps have incomplete coverage and should not be used for scientific analysis.
+Phobos: https://space.jpl.nasa.gov/tmaps/mars.html (previously downloaded)
+Deimos: https://space.jpl.nasa.gov/tmaps/mars.html (previously downloaded)
+Io: https://space.jpl.nasa.gov/tmaps/jupiter.html (previously downloaded)
+Europa: https://space.jpl.nasa.gov/tmaps/jupiter.html (previously downloaded)
+Ganymede: https://space.jpl.nasa.gov/tmaps/jupiter.html (previously downloaded)
+Callisto: https://space.jpl.nasa.gov/tmaps/jupiter.html (previously downloaded)
+Mimas: https://space.jpl.nasa.gov/tmaps/pix/sat1vss2.tif
+Enceladus: https://space.jpl.nasa.gov/tmaps/pix/sat2vss2.jpg
+Tethys: https://space.jpl.nasa.gov/tmaps/pix/sat3vss2.tif
+Dione: https://space.jpl.nasa.gov/tmaps/pix/sat4vss2.tif
+Rhea: https://space.jpl.nasa.gov/tmaps/pix/sat5vss2.jpg
+Iapetus: https://space.jpl.nasa.gov/tmaps/pix/sat8vss2.tif
+Miranda: https://space.jpl.nasa.gov/tmaps/pix/ura5vuu2.tif
+Ariel: https://space.jpl.nasa.gov/tmaps/pix/ura1vuu2.jpg
+Umbriel: https://space.jpl.nasa.gov/tmaps/pix/ura2vuu2.tif
+Titania: https://space.jpl.nasa.gov/tmaps/pix/ura3vuu2.tif
+Oberon: https://space.jpl.nasa.gov/tmaps/pix/ura4vuu2.tif
+Triton: https://space.jpl.nasa.gov/tmaps/pix/nep1vuu2.tif
