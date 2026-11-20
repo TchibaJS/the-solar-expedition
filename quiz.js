@@ -61,8 +61,8 @@
     ['Kuiper belt','Ceinture de Kuiper'],['Interstellar space','Espace interstellaire']
   ];
   const stopName = i => missionStops[i][window.atlasLanguage?.()==='fr'?1:0];
-  let mode = 'easy', deck = [], round = 0, score = 0, streak = 0, bestStreak = 0, locked = false, state = 'intro', lifelines = { half:false, skip:false };
-  let timerSeconds = 0, timeLeft = 0, timerId = null, burstTimeout = null, missed = [], milestonePoints = 0;
+  let mode = 'easy', deck = [], round = 0, score = 0, streak = 0, bestStreak = 0, locked = false, state = 'intro', lifelines = { half:false, skip:false, friend:false };
+  let timerSeconds = 0, timeLeft = 0, timerId = null, friendId = null, friendLeft = 20, burstTimeout = null, missed = [], milestonePoints = 0;
   const timerButtons = [...document.querySelectorAll('[data-quiz-timer]')];
   const local = (en,fr) => window.atlasLanguage?.()==='fr'?fr:en;
   function stopTimer(){if(timerId){clearInterval(timerId);timerId=null}}
@@ -74,11 +74,47 @@
     display.classList.toggle('urgent',timeLeft<=5);
     display.style.setProperty('--remaining',`${100*timeLeft/timerSeconds}%`);
   }
-  function startTimer(){
-    stopTimer();timeLeft=timerSeconds;updateTimer();
+  function runTimer(){
+    stopTimer();updateTimer();
     if(!timerSeconds)return;
     window.quizSounds?.tick(timeLeft);
     timerId=setInterval(()=>{if(state!=='game'||locked){stopTimer();return}timeLeft--;updateTimer();if(timeLeft>0)window.quizSounds?.tick(timeLeft);if(timeLeft<=0)answerQuestion(null)},1000);
+  }
+  function startTimer(){timeLeft=timerSeconds;runTimer()}
+  function stopFriend(){if(friendId){clearInterval(friendId);friendId=null} $q('#quiz-friend').hidden=true}
+  function updateFriend(){
+    $q('#quiz-friend-count').textContent=String(friendLeft);
+    $q('#quiz-friend-progress').style.setProperty('--friend-progress',`${friendLeft*5}%`);
+    $q('#quiz-friend').classList.toggle('urgent',friendLeft<=5);
+  }
+  function finishFriend(){
+    if(state!=='friend')return;
+    stopFriend();state='game';
+    if(timerSeconds&&timeLeft>0)runTimer();
+    $q('#quiz-question').focus();
+  }
+  function askFriend(){
+    if(state!=='game'||locked||lifelines.friend)return;
+    lifelines.friend=true;$q('#quiz-friend-button').disabled=true;stopTimer();
+    state='friend';friendLeft=20;
+    const overlay=$q('#quiz-friend');overlay.hidden=false;
+    $q('#quiz-friend-title').textContent=local('Ask a friend','Demandez à un ami');
+    $q('#quiz-friend-message').textContent=local('Call on a fellow explorer! You have 20 seconds to work out the answer together.','Faites appel à un autre explorateur ! Vous avez 20 secondes pour trouver la réponse ensemble.');
+    const question=deck[round];
+    $q('#quiz-friend-question').textContent=qT(question[0]);
+    const choices=$q('#quiz-friend-answers');choices.replaceChildren();
+    question[1].forEach((answer,index)=>{
+      if($q('#quiz-answers').children[index].classList.contains('eliminated'))return;
+      const choice=document.createElement('div');choice.className='quiz-friend-answer';
+      const letter=document.createElement('span');letter.textContent='ABCD'[index];
+      const label=document.createElement('strong');label.textContent=qT(answer);
+      choice.append(letter,label);choices.append(choice);
+    });
+    $q('.quiz-friend-kicker').textContent=local('MISSION LIFELINE','COUP DE POUCE');
+    $q('#quiz-friend-progress span').textContent=local('SECONDS','SECONDES');
+    $q('#quiz-friend-return').textContent=local('BACK TO QUESTION','RETOUR À LA QUESTION');
+    updateFriend();$q('#quiz-friend-return').focus();
+    friendId=setInterval(()=>{friendLeft--;updateFriend();if(friendLeft<=0)finishFriend()},1000);
   }
   function burst(correct){
     const layer=$q('#quiz-burst');layer.replaceChildren();
@@ -94,9 +130,9 @@
     burstTimeout=setTimeout(()=>layer.replaceChildren(),1600);
   }
   function shuffle(items) { const a=[...items]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]} return a; }
-  function show(which) { if(which!=='game')stopTimer();['intro','game','milestone','end'].forEach(x=>$q('#quiz-'+x).hidden=x!==which); state=which; window.localizeQuiz?.(); }
+  function show(which) { stopFriend();if(which!=='game')stopTimer();['intro','game','milestone','end'].forEach(x=>$q('#quiz-'+x).hidden=x!==which); state=which; window.localizeQuiz?.(); }
   function open() { if(typeof stopNarration==='function') stopNarration(); screen.hidden=false; document.body.classList.add('quiz-open'); show('intro'); $q('#quiz-close').focus(); }
-  function close() { stopTimer();window.quizSounds?.stop();screen.hidden=true; document.body.classList.remove('quiz-open'); }
+  function close() { stopTimer();stopFriend();window.quizSounds?.stop();screen.hidden=true; document.body.classList.remove('quiz-open'); }
   function renderLadder() { $q('#quiz-ladder').innerHTML=missionStops.map((_,i)=>`<li class="${i===score?'current':i<score?'passed':''}"><span>${String(i+1).padStart(2,'0')}</span><strong>${stopName(i)}</strong></li>`).reverse().join(''); }
   function renderQuestion() {
     if(round>=10) return finish(true);
@@ -111,6 +147,7 @@
     $q('#quiz-streak').textContent=streak>=2?local(`✦ ${streak} in a row`,`✦ ${streak} de suite`):'';
     $q('#quiz-half').disabled=lifelines.half;
     $q('#quiz-skip').disabled=lifelines.skip;
+    $q('#quiz-friend-button').disabled=lifelines.friend;
     renderLadder();window.localizeQuiz?.();startTimer();
   }
   function answerQuestion(i) {
@@ -163,7 +200,7 @@
     }
     window.localizeQuiz?.();
   }
-  function start() { window.quizSounds?.start();deck=shuffle(bank[mode]).slice(0,10); round=0; score=0;streak=0;bestStreak=0;missed=[];milestonePoints=0;locked=false; lifelines={half:false,skip:false}; show('game'); renderQuestion(); }
+  function start() { window.quizSounds?.start();deck=shuffle(bank[mode]).slice(0,10); round=0; score=0;streak=0;bestStreak=0;missed=[];milestonePoints=0;locked=false; lifelines={half:false,skip:false,friend:false}; show('game'); renderQuestion(); }
   timerButtons.forEach(button=>button.onclick=()=>{timerSeconds=Number(button.dataset.quizTimer);timerButtons.forEach(b=>{b.classList.toggle('active',b===button);b.setAttribute('aria-pressed',String(b===button))})});
   modeButtons.forEach(button=>button.onclick=()=>{mode=button.dataset.quizMode;modeButtons.forEach(b=>{b.classList.toggle('active',b===button);b.setAttribute('aria-pressed',String(b===button))});$q('#quiz-mode-description').textContent=qT({easy:'Familiar worlds and big discoveries.',medium:'Moons, weather, and planetary surprises.',hard:'Deep-cut facts for seasoned explorers.'}[mode])});
   document.querySelectorAll('[data-open-quiz]').forEach(b=>b.addEventListener('click',open));
@@ -173,5 +210,7 @@
   $q('#quiz-milestone-next').onclick=()=>{if(milestonePoints===10)finish(true);else{round++;show('game');renderQuestion()}};
   $q('#quiz-half').onclick=()=>{if(locked||lifelines.half)return;lifelines.half=true;const correct=deck[round][2];shuffle([0,1,2,3].filter(i=>i!==correct)).slice(0,2).forEach(i=>($q('#quiz-answers').children[i].classList.add('eliminated'),$q('#quiz-answers').children[i].disabled=true));$q('#quiz-half').disabled=true};
   $q('#quiz-skip').onclick=()=>{if(locked||lifelines.skip)return;stopTimer();lifelines.skip=true;missed.push(deck[round]);streak=0;round++;if(round===10)finish(true);else renderQuestion()};
-  document.addEventListener('keydown',e=>{if(screen.hidden)return;if(e.key==='Escape'){e.preventDefault();close();return}if(state==='game'&&!locked&&/^[1-4]$/.test(e.key)){const b=$q('#quiz-answers').children[Number(e.key)-1];if(!b.classList.contains('eliminated'))b.click()}else if(state==='game'&&locked&&e.key==='Enter')$q('#quiz-next').click();else if(state==='milestone'&&e.key==='Enter')$q('#quiz-milestone-next').click()});
+  $q('#quiz-friend-button').onclick=askFriend;
+  $q('#quiz-friend-return').onclick=finishFriend;
+  document.addEventListener('keydown',e=>{if(screen.hidden)return;if(e.key==='Escape'){e.preventDefault();if(state==='friend')finishFriend();else close();return}if(state==='game'&&!locked&&/^[1-4]$/.test(e.key)){const b=$q('#quiz-answers').children[Number(e.key)-1];if(!b.classList.contains('eliminated'))b.click()}else if(state==='game'&&locked&&e.key==='Enter')$q('#quiz-next').click();else if(state==='milestone'&&e.key==='Enter')$q('#quiz-milestone-next').click()});
 })();

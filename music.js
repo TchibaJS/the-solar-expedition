@@ -8,7 +8,7 @@
     {bass:43.65,notes:[87.31,130.81,164.81,196,261.63]},
     {bass:49,notes:[98,146.83,196,220,293.66]}
   ];
-  let context,master,padBus,bellBus,spaceDelay,feedback,step=0,timer,playing=false;
+  let context,master,padBus,bellBus,spaceDelay,feedback,step=0,timer,playing=false,wanted=true;
   const activePads=new Set();
   function targetVolume(){return narratorAudio&&!narratorAudio.paused?.065:.18}
   function gainTo(value){
@@ -78,20 +78,29 @@
     bell(chord.notes[4]*2,now+6.5);
     bell(chord.notes[2]*2,now+10.8);
   }
-  function labels(){const fr=window.atlasLanguage?.()==='fr';return playing?(fr?'Couper la musique de l’univers':'Turn universe music off'):(fr?'Activer la musique de l’univers':'Play universe music')}
-  function sync(){buttons.forEach(button=>{button.classList.toggle('active',playing);button.setAttribute('aria-pressed',String(playing));button.setAttribute('aria-label',labels());button.title=labels();button.textContent=playing?'♫':'♪'})}
-  async function toggle(){
-    if(!AudioContext)return;
+  function labels(){const fr=window.atlasLanguage?.()==='fr';return wanted?(fr?'Couper la musique de l’univers':'Turn universe music off'):(fr?'Activer la musique de l’univers':'Play universe music')}
+  function sync(){buttons.forEach(button=>{button.classList.toggle('active',wanted);button.setAttribute('aria-pressed',String(wanted));button.setAttribute('aria-label',labels());button.title=labels();button.textContent=wanted?'♫':'♪'})}
+  function attemptStart(){
+    if(!AudioContext||!wanted||playing)return;
     if(!context)setup();
-    playing=!playing;
-    if(playing){await context.resume();nextChord();timer=setInterval(nextChord,15000);gainTo(targetVolume())}
-    else{clearInterval(timer);activePads.forEach(releasePad);gainTo(0)}
+    context.resume().then(()=>{
+      if(!wanted||playing||context.state!=='running')return;
+      playing=true;nextChord();timer=setInterval(nextChord,15000);gainTo(targetVolume());sync();
+    }).catch(()=>{});
+  }
+  function toggle(){
+    if(!AudioContext)return;
+    wanted=!wanted;
+    if(wanted)attemptStart();
+    else{playing=false;clearInterval(timer);activePads.forEach(releasePad);gainTo(0)}
     sync();
   }
   buttons.forEach(button=>button.addEventListener('click',toggle));
+  document.addEventListener('click',attemptStart);
+  document.addEventListener('keydown',attemptStart);
   if(!AudioContext)buttons.forEach(button=>button.disabled=true);
   narratorAudio.addEventListener('play',()=>{if(playing)gainTo(targetVolume())});
   narratorAudio.addEventListener('pause',()=>{if(playing)gainTo(targetVolume())});
   narratorAudio.addEventListener('ended',()=>{if(playing)gainTo(targetVolume())});
-  window.syncMusicControls=sync;sync();
+  window.syncMusicControls=sync;sync();attemptStart();
 })();
